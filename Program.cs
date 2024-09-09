@@ -57,6 +57,10 @@ app.MapGet("/servicetickets", () =>
 app.MapGet("/servicetickets/{id}", (int id) =>
 {
     ServiceTicket serviceTicket = serviceTickets.FirstOrDefault(st => st.Id == id);
+    if(serviceTicket == null)
+    {
+        return Results.NotFound();
+    }
   
     return new ServiceTicketDTO
     {
@@ -76,11 +80,22 @@ app.MapGet("/employees/{id}", (int id) =>
     {
         return Results.NotFound();
     }
+    List<ServiceTicket> tickets = serviceTickets.Where(st => st.EmployeeId == id).ToList();
+    
     return Results.Ok(new EmployeeDTO
     {
         Id = employee.Id,
         Name = employee.Name,
-        Specialty = employee.Specialty
+        Specialty = employee.Specialty,
+        ServiceTickets = tickets.Select(t => new ServiceTicketDTO
+        {
+            Id = t.Id,
+            CustomerId = t.CustomerId,
+            EmployeeId = t.EmployeeId,
+            Description = t.Description,
+            Emergency = t.Emergency,
+            DateCompleted = t.DateCompleted
+        }).ToList()
     });
 });
 
