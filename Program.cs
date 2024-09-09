@@ -1,4 +1,5 @@
 using HoneyRaesAPI.Models;
+using HoneyRaesAPI.Models.DTOs;
 using System.Collections.Generic;
 
 List<Customer> customers = new List<Customer>
@@ -66,6 +67,36 @@ app.MapGet("/servicetickets/{id}", (int id) =>
         Emergency = serviceTicket.Emergency,
         DateCompleted = serviceTicket.DateCompleted
     };
+});
+
+app.MapGet("/employees/{id}", (int id) =>
+{
+    Employee employee = employees.FirstOrDefault(e => e.Id == id);
+    if (employee == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(new EmployeeDTO
+    {
+        Id = employee.Id,
+        Name = employee.Name,
+        Specialty = employee.Specialty
+    });
+});
+
+app.MapGet("/customers/{id}", (int id) =>
+{
+    Customer customer = customers.FirstOrDefault(e => e.Id == id);
+    if (customer == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(new CustomerDTO
+    {
+        Id = customer.Id,
+        Name = customer.Name,
+        Address = customer.Address
+    });
 });
 
 app.MapGet("/hello", () =>
